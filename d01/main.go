@@ -1,25 +1,39 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
+	"log"
 	"os"
+	"strconv"
+	"github.com/shreshthkhilani/aoc18/reader"
 )
 
 func main() {
 	filePath := os.Args[1]
-	if filePath == "":
-		fmt.Println("No input file path specified.")
-	dat, err := ioutil.ReadFile(filePath)
-	if err != nil:
-		fmt.Println("Unable to read file at path:", filePath)
-		os.Exit(1)
-	fmt.Print(string(dat))
+	if filePath == "" {
+		log.Fatal("No input file path specified.")
+	}
 	
+	lines, err := reader.GetLines(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	data := LineParser(lines)
+	log.Println(Part1(data, 0))
+	log.Println(Part2(data, make(map[int]bool), 0))
+}
+
+func LineParser(lines []string) []int {
 	var data []int
-	data = append(data, 3, 3, 4, -2, -4)
-	fmt.Println(Part1(data, 0))
-	fmt.Println(Part2(data, make(map[int]bool), 0))
+	for _, line := range lines {
+		datum, err := strconv.ParseInt(line, 10, 32)
+		if err != nil {
+			log.Println("Skipping line:", line)
+			continue
+		}
+		data = append(data, int(datum))
+	}
+	return data
 }
 
 func Part1(data []int, frequency int) int {
